@@ -1,36 +1,11 @@
 pipeline {
-    agent any  
+    agent any   // ✅ correct usage
 
     tools {
-        maven 'Maven'
-    }
-
-    environment {
-        JAR_FILE = "target/MyMavenGuavaApp-1.0-SNAPSHOT.jar"
+        maven 'Maven'   // Make sure Maven is configured in Jenkins
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url:pipeline {
-    agent any  
-
-    tools {
-        maven 'Maven'
-    }
-
-    environment {
-        JAR_FILE = "target/MyMavenGuavaApp-1.0-SNAPSHOT.jar"
-    }
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/Sandhya-TS203/MyMavenSeleniumApp03.git'
-            }
-        }
 
         stage('Build') {
             steps {
@@ -46,90 +21,29 @@ pipeline {
 
         stage('Package') {
             steps {
-                sh 'mvn package -DskipTests'
+                sh 'mvn package'
             }
         }
 
         stage('Verify JAR') {
             steps {
-                sh '''
-                echo "Current directory:"
-                pwd
-
-                echo "Files in target folder:"
-                ls -l target/
-                '''
+                sh 'ls target'
             }
         }
 
         stage('Run Application') {
             steps {
-                sh '''
-                echo "Starting application..."
-                nohup java -jar target/MyMavenGuavaApp-1.0-SNAPSHOT.jar > app.log 2>&1 &
-                '''
+                sh 'java -jar target/*.jar'
             }
         }
     }
 
     post {
-        success {
-            echo 'Build and deployment successful! 🎉'
-        }
         failure {
             echo 'Build failed! ❌'
         }
-    }
-} 
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
-            }
-        }
-
-        stage('Verify JAR') {
-            steps {
-                sh '''
-                echo "Current directory:"
-                pwd
-
-                echo "Files in target folder:"
-                ls -l target/
-                '''
-            }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh '''
-                echo "Starting application..."
-                nohup java -jar target/MyMavenGuavaApp-1.0-SNAPSHOT.jar > app.log 2>&1 &
-                '''
-            }
-        }
-    }
-
-    post {
         success {
-            echo 'Build and deployment successful! 🎉'
-        }
-        failure {
-            echo 'Build failed! ❌'
+            echo 'Build successful! ✅'
         }
     }
 }
